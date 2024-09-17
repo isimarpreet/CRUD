@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View User</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container1">
+        <h1>View User</h1>
+        <div id="user-details">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><strong>ID:</strong></td>
+                        <td id="user-id"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td id="user-name"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td id="user-email"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone:</strong></td>
+                        <td id="user-phone"></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Age:</strong></td>
+                        <td id="user-age"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a href="/list"><button id="back-to-list-btn">Back to List</button></a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = window.location.pathname.split('/')[2];
+            fetch(`/api/users/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.data) {
+                        document.getElementById('user-id').textContent = data.data.id;
+                        document.getElementById('user-name').textContent = data.data.name;
+                        document.getElementById('user-email').textContent = data.data.email;
+                        document.getElementById('user-phone').textContent = data.data.phone;
+                        document.getElementById('user-age').textContent = data.data.age;
+                    } else {
+                        alert('User not found');
+                    }
+                })
+                .catch(err => console.error('Error:', err));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Edit User</h1>
+    <div class="form-container">
+      
+        <form id="edit-form">
+            <input type="hidden" id="user-id">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" required>
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <a href="/list"><button>Back to List</button></a>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = window.location.pathname.split('/')[2];
+            fetch(`/api/users/${userId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.data) {
+                        document.getElementById('user-id').value = data.data.id;
+                        document.getElementById('name').value = data.data.name;
+                        document.getElementById('email').value = data.data.email;
+                        document.getElementById('phone').value = data.data.phone;
+                        document.getElementById('age').value = data.data.age;
+                    } else {
+                        alert('User not found');
+                    }
+                })
+                .catch(err => console.error('Error:', err));
+
+            document.getElementById('edit-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById('user-id').value;
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const age = document.getElementById('age').value;
+
+                fetch(`/api/users/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, phone, age })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('User updated successfully');
+                    window.location.href = '/list';
+                })
+                .catch(err => console.error('Error:', err));
+            });
+        });
+    </script>
+</body>
+</html>
